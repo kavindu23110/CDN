@@ -1,0 +1,51 @@
+﻿
+syntax = "proto3";
+option csharp_namespace =  "FileShare.GPRC.protobuf";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+package google.protobuf;
+
+
+
+service InitialConnection {
+  rpc InitialCheckForTargetNode(initialRequest) returns (initialResponse);
+  rpc LeaderElectionRequest(LeaderRequest) returns (Nodes);
+  rpc BroadCastElectedLeader(Nodes) returns(google.protobuf.Empty) ;
+  rpc CheckForLeaderAvilability(Nodes) returns (Nodes);
+    rpc BroadCastActivenodes(stream Nodes) returns (google.protobuf.Empty);
+}
+
+
+
+
+
+message initialRequest{
+    Nodes Node=1;
+}
+
+message initialResponse{
+	string IpAddress=1;
+	string Host=2;
+	bool IsLeaderAvailable=3;
+	repeated Nodes NodeList=4;
+	int32 Port=5;
+	int64 priority=6;
+}
+
+message Nodes{
+	string IpAddress=1;
+	int32 Port=2;
+	bool IsLeader=3;
+	string ClusterName=4;
+	Timestamp LastContacted=5;
+	int64 priority=6;
+}
+
+message LeaderRequest{
+	int64 Priority=1;
+}
+
+
+message LeaderRecieved{
+	bool sucess=1;
+}
