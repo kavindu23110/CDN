@@ -10,14 +10,13 @@ namespace CDN.BLL.Vote
 {
   public  class GeoDistance
     {
-        public string IpAddress { get; }
-        public GeoDistance(string IpAddress)
+       
+        public GeoDistance()
         {
-            this.IpAddress = IpAddress;
            
         }
 
-       public double calcuateIpDistance()
+       public double calcuateIpDistance(string IpAddress )
         {
            var ipinfo= GetUserCountryByIp(IpAddress);
             return GetCountryDistance(ipinfo);

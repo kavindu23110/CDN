@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <Folder Include="Cache\" />
+    <Folder Include="GRPC\" />
   </ItemGroup>
 
 </Project>
