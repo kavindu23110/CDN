@@ -5,10 +5,10 @@ namespace CDN.BLL.Zookeeper
 {
     class Watcher : IWatcher
     {
-  
+
         private ZookeeperService zKService;
 
- 
+
         public Watcher(ZookeeperService zKService)
         {
             this.zKService = zKService;
@@ -18,14 +18,17 @@ namespace CDN.BLL.Zookeeper
         {
             if (@event.Type == EventType.NodeChildrenChanged)
             {
-              
+                
                 Console.WriteLine(@event.Path);
             }
 
 
-            if (@event.Type == EventType.NodeDeleted)
+            if (@event.Type == EventType.NodeDeleted && !@event.Path.Contains(BOD.NodeDetails.ClusterName + "-Leader"))
             {
-               new  LeaderElection(zKService).ElectLeader();
+                if (@event.Path.Contains(BOD.NodeDetails.LeaderNode))
+                {
+                    new LeaderElection(zKService).ElectLeader();
+                }
             }
         }
     }

@@ -1,5 +1,6 @@
 using CDN.BLL.Zookeeper;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 
@@ -15,8 +16,6 @@ namespace CDN
             zk = new CDN.BLL.Zookeeper.ZookeeperService().GetZookeeperService() ;
             zk.CreateNodeForcurrent();
             CreateHostBuilder(args).Build().Run();
-
-
         }
 
         private static void setCurrentNodeDetails()
@@ -33,6 +32,9 @@ namespace CDN
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                }).ConfigureServices(
+                service=> { service.AddHostedService<CDN.BLL.BackgroundServices.FileWatcherService>(); 
+                
                 });
     }
 }

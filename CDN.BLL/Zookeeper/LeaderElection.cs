@@ -35,6 +35,7 @@ namespace CDN.BLL.Zookeeper
             {
                 var electedLeader = new CDN.GRPC.protobuf.ElectedLeader() { IpAddress = BOD.NodeDetails.Ip, Priority = BOD.NodeDetails.Priority };
                 BOD.NodeDetails.LeaderNode = BOD.NodeDetails.Ip;
+                zKService.CreateLeaderNode(BOD.NodeDetails.LeaderNode);
                 zKService.SetDataToNode($"/{BOD.NodeDetails.ClusterName}", BOD.NodeDetails.Ip);
                 await BroadcastElectedLeaderAsync(electedLeader);
             }

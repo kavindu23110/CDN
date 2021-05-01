@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Extensions.Hosting;
+using System;
 using System.IO;
-using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace CDN.BLL.Filesystem
+namespace CDN.BLL.BackgroundServices
 {
-  public  class Filechangewatcher
+    public class FileWatcherService : BackgroundService
     {
         private FileSystemWatcher watcher;
 
-        private void create_Watchers()
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             watcher = new System.IO.FileSystemWatcher();
             watcher.Path = BOD.SystemParameters.FileHostPath;
@@ -32,7 +33,7 @@ namespace CDN.BLL.Filesystem
 
         private void OnRenamed(object sender, RenamedEventArgs e)
         {
-            throw new NotImplementedException();
+       
         }
 
         private void OnDeleted(object sender, FileSystemEventArgs e)
@@ -49,5 +50,7 @@ namespace CDN.BLL.Filesystem
         {
             throw new NotImplementedException();
         }
+
+
     }
 }

@@ -1,19 +1,28 @@
-﻿using ZooKeeperNet;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
+using ZooKeeperNet;
 
 namespace CDN.BLL.Zookeeper
 {
     public class ZookeeperService
     {
-        private ZookeeperService ZKService { get; }
+        private ZookeeperService ZKService;
 
         private ZooKeeper zk;
-
         public ZookeeperService()
+        {
+            if (zk == null)
+            {
+                zk = new ZooKeeper(BOD.NodeDetails.ZookeeperHost, new TimeSpan(0, 0, 0, 50000), new CDN.BLL.Zookeeper.Watcher(ZKService));
+
+                Task.Delay(50);
+
+            }
+        }
+
+        public ZookeeperService GetZookeeperService()
         {
             if (ZKService == null)
             {
@@ -22,20 +31,23 @@ namespace CDN.BLL.Zookeeper
 
             }
 
-            if (zk == null)
-            {
-                zk = new ZooKeeper(BOD.NodeDetails.ZookeeperHost, new TimeSpan(0, 0, 0, 50000), new CDN.BLL.Zookeeper.Watcher(ZKService));
-
-                Task.Delay(50);
-            }
-
-
-        }
-
-        public ZookeeperService GetZookeeperService()
-        {
             return ZKService;
         }
+        public void CreateLeaderNode(string LeaderIp)
+        {
+            var root = BOD.NodeDetails.ClusterName + "-Leader";
+            var d = GetChildNodes("/").Where(p => p == root).ToList().Count;
+            if (d == 0)
+            {
+                zk.Create($"/{root}", "mydata".GetBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.Ephemeral);
+            }
+            foreach (var item in GetChildNodes($"/{root}"))
+            {
+                zk.Delete($"/{root}/{item}", 0);
+            }
+            zk.Create($"/{root}/{LeaderIp}", LeaderIp.GetBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.Ephemeral);
+        }
+
 
         public void CreateNodeForcurrent()
         {
@@ -76,12 +88,19 @@ namespace CDN.BLL.Zookeeper
 
         private void setLeaderNode()
         {
-            var data = GetDataFromNode($"/{BOD.NodeDetails.ClusterName}");
+            var root = BOD.NodeDetails.ClusterName + "-Leader";
+            var d = GetChildNodes("/").Where(p => p == root).ToList().Count;
+            if (d == 0)
+            {
+                return;
+            }
+            var data = GetChildNodes($"/{root}").FirstOrDefault();
             if (null != data)
             {
                 BOD.NodeDetails.LeaderNode = data;
+                return;
             }
-         
+
         }
 
         //private bool CheckChildNodesexist(string path)
@@ -109,7 +128,7 @@ namespace CDN.BLL.Zookeeper
         public string GetDataFromNode(string path)
         {
             var s = zk.GetData(path, true, null);
-            if (s.Length==0)
+            if (s.Length == 0)
             {
                 return null;
             }

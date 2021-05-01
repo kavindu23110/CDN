@@ -5,7 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Proto\FileSystemGRPC.proto" />
     <None Remove="Proto\LeadeElectionGRPC.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Proto\FileSystemGRPC.proto" />
   </ItemGroup>
 
   <ItemGroup>
