@@ -3,7 +3,7 @@ using Grpc.Net.Client;
 
 using System;
 
-namespace FileShare.GPRC.GRPC.Baseclass
+namespace CDN.GRPC.BsaeClass
 {
     public abstract class AbstractGRPCClient
     {

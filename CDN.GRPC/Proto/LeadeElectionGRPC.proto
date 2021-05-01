@@ -1,0 +1,26 @@
+﻿
+syntax = "proto3";
+option csharp_namespace ="CDN.GRPC.protobuf";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+package google.protobuf;
+
+
+
+service LeadeElectionGRPC {
+rpc InitiateLeaderElection (LeaderElectionrequest) returns(LeaderElectionrequest);
+  rpc BroadcastElectedLeader( ElectedLeader) returns(google.protobuf.Empty) ;
+}
+
+
+message LeaderElectionrequest{
+	int64 Priority=1;
+	bool response=2;
+}
+
+message ElectedLeader{
+	int64 Priority=1;
+    string IpAddress=2;
+}
+
+

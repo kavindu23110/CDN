@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Proto\LeadeElectionGRPC.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Grpc" Version="2.37.1" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.37.0" />
     <PackageReference Include="Grpc.AspNetCore.Server" Version="2.37.0" />
@@ -20,6 +24,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="protobuf-net.Grpc" Version="1.0.152" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Proto\LeadeElectionGRPC.proto" />
   </ItemGroup>
 
 </Project>

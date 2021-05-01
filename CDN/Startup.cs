@@ -1,18 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using CDN.GRPCHostHelper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System;
+using System.IO;
 
 namespace CDN
 {
@@ -28,24 +24,27 @@ namespace CDN
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<CDN.BLL.Zookeeper.ZookeeperService>();
+            services.AddGrpc();
+            CDN.GRPCHostHelper.ClientHost.GRPCClientHost(services);
+            services.AddOptions();
             services.AddDistributedMemoryCache();
             services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory
+      )
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-        
+
             app.UseHttpsRedirection();
             //app.UseStaticFiles(
             //    CreateNewStaticfilesPath(env)
             //    ); ;
-
+            //loggerFactory.add();
             app.UseStaticFiles(new StaticFileOptions()
             {
                 HttpsCompression = Microsoft.AspNetCore.Http.Features.HttpsCompressionMode.Compress,
@@ -67,6 +66,8 @@ namespace CDN
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                ClientHost.HostGRPCServer(endpoints);
+                
             });
         }
 
@@ -78,6 +79,9 @@ namespace CDN
                 Path.Combine(env.ContentRootPath, "MyStaticFiles")),
                 RequestPath = "/StaticFiles"
             };
+
+
         }
+
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Grpc.Core;
 using System;
 
-namespace FileShare.GPRC.GRPC.Baseclass
+namespace CDN.GRPC.BsaeClass
 {
     public abstract class GRPCServer
     {
