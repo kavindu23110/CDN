@@ -16,15 +16,30 @@ namespace CDN.BOD
         public static string UniqueId { get; set; }
         public static long Priority { get; set; }
         public static string LeaderNode { get; set; }
+        public static long PaxosPriority = 0;
     }
 
     public static class SystemParameters
     {
         public static string FileHostPath = "D:/temp";
+
+        public static double RequestDeadline = 200;
     }
 
     public static class SystemPorts
     {
-        public static int LeaderElection= 1550;
+        public static int Fileshare= 10113;
+        public static int LeaderElection= 10114;
+        public static int nearestnode= 10115;
     }
+    public static class StaticLists
+    {
+        
+      public enum FileOperations
+        {
+            Rename = 0, Delete = 1, Change = 2, Create = 3
+        }
+    }
+
+  
 }

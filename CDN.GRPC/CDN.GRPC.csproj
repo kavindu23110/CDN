@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -7,9 +7,11 @@
   <ItemGroup>
     <None Remove="Proto\FileSystemGRPC.proto" />
     <None Remove="Proto\LeadeElectionGRPC.proto" />
+    <None Remove="Proto\VotingGRPC - Copy.proto" />
   </ItemGroup>
 
   <ItemGroup>
+    <Protobuf Include="Proto\VotingGRPC - Copy.proto" />
     <Protobuf Include="Proto\FileSystemGRPC.proto" />
   </ItemGroup>
 

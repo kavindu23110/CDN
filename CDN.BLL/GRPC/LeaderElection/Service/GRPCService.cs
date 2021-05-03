@@ -19,7 +19,7 @@ namespace CDN.BLL.GRPC.LeaderElection.Service
         {
             if (request.Priority < BOD.NodeDetails.Priority)
             {
-                Task.Run(() => { new BLL.Zookeeper.LeaderElection(new ZookeeperService().GetZookeeperService()).ElectLeader(); });
+                Task.Run(() => { new BLL.Services.LeaderElection(new ZookeeperService().GetZookeeperService()).ElectLeader(); });
                 return Task.FromResult(new LeaderElectionrequest() { Priority = BOD.NodeDetails.Priority, Response = true });
             }
             return Task.FromResult(new LeaderElectionrequest() { Priority = BOD.NodeDetails.Priority, Response = false });

@@ -49,7 +49,7 @@ namespace CDN.BLL.Zookeeper
         }
 
 
-        public void CreateNodeForcurrent()
+        public bool CreateNodeForcurrent()
         {
             var xsdf = zk.GetChildren("/", false);
 
@@ -84,6 +84,7 @@ namespace CDN.BLL.Zookeeper
             //  zk.SetData("/root/childone", "childonemodify".GetBytes(), -1);
             //delete/root/childone this node, the second parameter version, -1, then delete, ignore version   
             //  zk.Delete("/root/childone", -1);
+            return true;
         }
 
         private void setLeaderNode()
@@ -119,7 +120,7 @@ namespace CDN.BLL.Zookeeper
             var nodes = (List<string>)zk.GetChildren("/" + ClusterName, true);
             foreach (var item in nodes)
             {
-                var byteArray = zk.GetData($"/r{ BOD.NodeDetails.ClusterName}/{item}", true, null);
+                var byteArray = zk.GetData($"/{ BOD.NodeDetails.ClusterName}/{item}", true, null);
 
                 kv.Add(new KeyValuePair<long, string>(ByteToLong(byteArray), item.Substring(0, item.IndexOf("-"))));
             }

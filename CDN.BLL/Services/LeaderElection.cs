@@ -1,10 +1,10 @@
 ﻿using CDN.BLL.GRPC.LeaderElection;
+using CDN.BLL.Zookeeper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ZooKeeperNet;
 
-namespace CDN.BLL.Zookeeper
+namespace CDN.BLL.Services
 {
     internal class LeaderElection
     {
@@ -13,12 +13,12 @@ namespace CDN.BLL.Zookeeper
 
         public LeaderElection(ZookeeperService zKService)
         {
-            this.zKService = zKService;
+            this.zKService = BLL.Statics.zk;
         }
 
         internal void ElectLeader()
         {
-            var LstNodes = zKService.GetClusterNodes(BOD.NodeDetails.ClusterName);
+             var LstNodes = zKService.GetClusterNodes(BOD.NodeDetails.ClusterName);
             var LstSelected = SelectHighPriorityNodes(LstNodes);
             _ = ProceedToElectionAsync(LstSelected);
         }
@@ -52,7 +52,7 @@ namespace CDN.BLL.Zookeeper
             }
         }
 
-        private async System.Threading.Tasks.Task<bool> SendLeaderElectionRequest(List<GRPCClient> clients)
+        private async System.Threading.Tasks.Task<bool> SendLeaderElectionRequest(List<GRPCClient_LeaderElection> clients)
         {
             int responses = 0;
 
@@ -79,13 +79,14 @@ namespace CDN.BLL.Zookeeper
             return responses > 0;
         }
 
-        private List<GRPCClient> CreateGRPCClients(List<KeyValuePair<long, string>> lstSelected)
+        private List<GRPCClient_LeaderElection> CreateGRPCClients(List<KeyValuePair<long, string>> lstSelected)
         {
-            List<GRPCClient> clients = new List<GRPCClient>();
+            List<GRPCClient_LeaderElection> clients = new List<GRPCClient_LeaderElection>();
             foreach (var item in lstSelected)
             {
-                var client = new GRPC.LeaderElection.GRPCClient(item.Value, BOD.SystemPorts.LeaderElection);
-                clients.Add(client);
+              
+                    var client = new GRPC.LeaderElection.GRPCClient_LeaderElection(item.Value, BOD.SystemPorts.LeaderElection);
+                    clients.Add(client);
             }
             return clients;
         }

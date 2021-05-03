@@ -10,8 +10,8 @@ package google.protobuf;
 service FileSystemGRPC
 {
 
-    rpc FileOnChange(stream FileOnChangeData)returns(Response) ;
-    rpc FileOnCreate(stream FileOnCreateData)returns(Response) ;
+    rpc FileOnChange( FileOnChangeData)returns(Response) ;
+    rpc FileOnCreate(FileOnCreateData)returns(Response) ;
     rpc FileSystemOnStart(stream FileDetailsMD5)returns(stream FileDetails) ;
 }
 
@@ -28,7 +28,8 @@ message FileOnChangeData
 {
   string OldPath=1;
   string NewPath=2;
-   string FileName=3;
+     string OldFileName=3;
+   string NewFileName=7;
    string Extention=4;
   string OperationType=5;
     bytes Content=6;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CDN.BLL.Services;
+using System;
 using ZooKeeperNet;
 
 namespace CDN.BLL.Zookeeper

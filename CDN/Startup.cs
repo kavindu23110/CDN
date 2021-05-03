@@ -1,7 +1,7 @@
-using CDN.GRPCHostHelper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -24,8 +24,9 @@ namespace CDN
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddGrpc();
-            CDN.GRPCHostHelper.ClientHost.GRPCClientHost(services);
+
             services.AddOptions();
             services.AddDistributedMemoryCache();
             services.AddControllers();
@@ -40,11 +41,16 @@ namespace CDN
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseDirectoryBrowser();
             app.UseHttpsRedirection();
+
+
             //app.UseStaticFiles(
             //    CreateNewStaticfilesPath(env)
             //    ); ;
-            //loggerFactory.add();
+            //loggerFactory.add
+            // app.UseMiddleware<BLL.MiddleWare.RequestRedirectionByLocation>();
+            app.UseRewriter(new RewriteOptions().Add(new RedirectWwwRule()));
             app.UseStaticFiles(new StaticFileOptions()
             {
                 HttpsCompression = Microsoft.AspNetCore.Http.Features.HttpsCompressionMode.Compress,
@@ -61,13 +67,13 @@ namespace CDN
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            // app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                ClientHost.HostGRPCServer(endpoints);
-                
+     
+
             });
         }
 
