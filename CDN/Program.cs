@@ -1,5 +1,6 @@
 using CDN.BLL.Zookeeper;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,7 +14,8 @@ namespace CDN
 
         public static void Main(string[] args)
         {
-           
+            
+
             CreateHostBuilder(args).Build().Run();
         }
 

@@ -135,7 +135,7 @@ namespace CDN.BLL.Services
             var response = new CDN.GRPC.protobuf.PaxosResponse()
             {
                 Distance = distance,
-                FileURL = "",//kts
+                FileURL = $"https://{BOD.NodeDetails.Ip}:{BOD.NodeDetails.Host}"+request.FileURL,//kts
                 PID = request.PID,
             };
             return response;

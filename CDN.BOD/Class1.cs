@@ -16,6 +16,8 @@ namespace CDN.BOD
         public static string UniqueId { get; set; }
         public static long Priority { get; set; }
         public static string LeaderNode { get; set; }
+        public static int Host { get; set; }
+
         public static long PaxosPriority = 0;
     }
 

@@ -36,7 +36,7 @@ namespace CDN.BLL.BackgroundServices
         {
             Guid id = Guid.NewGuid();
             BOD.NodeDetails.Ip = "127.0.0.1";
-          //  BOD.NodeDetails.Ip=HttpContext.
+            BOD.NodeDetails.Host = 10110;
             BOD.NodeDetails.UniqueId = id.ToString();
             BOD.NodeDetails.Priority = DateTime.UtcNow.Ticks;
 

@@ -41,29 +41,30 @@ namespace CDN
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseDirectoryBrowser();
+          
             app.UseHttpsRedirection();
-
-
-            //app.UseStaticFiles(
-            //    CreateNewStaticfilesPath(env)
-            //    ); ;
-            //loggerFactory.add
-            // app.UseMiddleware<BLL.MiddleWare.RequestRedirectionByLocation>();
+      
             app.UseRewriter(new RewriteOptions().Add(new RedirectWwwRule()));
-            app.UseStaticFiles(new StaticFileOptions()
+            app.UseDirectoryBrowser();
+            app.UseStaticFiles(new StaticFileOptions
             {
-                HttpsCompression = Microsoft.AspNetCore.Http.Features.HttpsCompressionMode.Compress,
-                OnPrepareResponse = (context) =>
-                {
-                    var headers = context.Context.Response.GetTypedHeaders();
-                    headers.CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue
-                    {
-                        Public = true,
-                        MaxAge = TimeSpan.FromDays(30)
-                    };
-                }
+                FileProvider = new PhysicalFileProvider(
+   BOD.SystemParameters.FileHostPath),
+                RequestPath = "/Files"
             });
+            //app.UseStaticFiles(new StaticFileOptions()
+            //{
+            //    HttpsCompression = Microsoft.AspNetCore.Http.Features.HttpsCompressionMode.Compress,
+            //    OnPrepareResponse = (context) =>
+            //    {
+            //        var headers = context.Context.Response.GetTypedHeaders();
+            //        headers.CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue
+            //        {
+            //            Public = true,
+            //            MaxAge = TimeSpan.FromDays(30)
+            //        };
+            //    }
+            //});
 
             app.UseRouting();
 
@@ -77,17 +78,18 @@ namespace CDN
             });
         }
 
-        private StaticFileOptions CreateNewStaticfilesPath(IWebHostEnvironment env)
-        {
-            return new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                Path.Combine(env.ContentRootPath, "MyStaticFiles")),
-                RequestPath = "/StaticFiles"
-            };
+        //private StaticFileOptions CreateNewStaticfilesPath(IWebHostEnvironment env)
+        //{
+        //    var x = Path.Combine(env.ContentRootPath, "Files");
+        //    return new StaticFileOptions
+        //    {
+        //        FileProvider = new PhysicalFileProvider(
+        //        Path.Combine(env.ContentRootPath, "Files")),
+        //        RequestPath = "/StaticFiles"
+        //    };
 
 
-        }
+        //}
 
     }
 }
