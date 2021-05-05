@@ -17,19 +17,19 @@ namespace CDN.BLL.Zookeeper
 
         public void Process(WatchedEvent @event)
         {
-            if (@event.Type == EventType.NodeChildrenChanged)
-            {
+            //if (@event.Type == EventType.NodeChildrenChanged)
+            //{
                 
-                Console.WriteLine(@event.Path);
-            }
+            //    Console.WriteLine(@event.Path);
+            //}
 
 
             if (@event.Type == EventType.NodeDeleted && !@event.Path.Contains(BOD.NodeDetails.ClusterName + "-Leader"))
             {
-                if (@event.Path.Contains(BOD.NodeDetails.LeaderNode))
-                {
-                    new LeaderElection(zKService).ElectLeader();
-                }
+                //if (@event.Path.Contains(BOD.NodeDetails.LeaderNode))
+                //{
+                //    new LeaderElection().ElectLeader();
+                //}
             }
         }
     }

@@ -13,7 +13,7 @@ namespace CDN.BLL.BackgroundServices
         {
             if (BOD.NodeDetails.LeaderNode == null)
             {
-                         new CDN.BLL.Services.LeaderElection(new CDN.BLL.Zookeeper.ZookeeperService().GetZookeeperService()).ElectLeader(); ;
+                         new CDN.BLL.Services.LeaderElection().ElectLeader(); ;
             }
         }
 

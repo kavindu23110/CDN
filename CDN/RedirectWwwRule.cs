@@ -16,21 +16,22 @@ namespace CDN
 
         public void ApplyRule(RewriteContext context)
         {
-        
-
-            var nearestnode= GetNearestNodeAsync(context).Result;
+            var nearestnode = GetNearestNodeAsync(context).Result;
             var request = context.HttpContext.Request;
-            var t= request.Host+ request.Path;
-            if (new Uri(nearestnode).Host==BOD.NodeDetails.Ip )
+            var t = request.Host + request.Path;
+            if (nearestnode.Length > 0)
             {
-                context.Result = RuleResult.ContinueRules;
-                return;
+                if (new Uri(nearestnode).Host == BOD.NodeDetails.Ip)
+                {
+                    context.Result = RuleResult.ContinueRules;
+                    return;
+                }
             }
             var response = context.HttpContext.Response;
             response.StatusCode = (int)HttpStatusCode.MovedPermanently; ;
-            response.Headers[HeaderNames.Location] = "https://images.app.goo.gl/4WYuCiaxjbbadCDZ8";//nearestnode;
+            response.Headers[HeaderNames.Location] = nearestnode;
             context.Result = RuleResult.EndResponse;
-           
+
         }
 
         private async System.Threading.Tasks.Task<string> GetNearestNodeAsync(RewriteContext context)

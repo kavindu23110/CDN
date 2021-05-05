@@ -9,7 +9,8 @@ package google.protobuf;
 
 service LeadeElectionGRPC {
 rpc InitiateLeaderElection (LeaderElectionrequest) returns(LeaderElectionrequest);
-  rpc BroadcastElectedLeader( ElectedLeader) returns(google.protobuf.Empty) ;
+rpc BroadcastElectedLeader( ElectedLeader) returns(google.protobuf.Empty) ;
+ rpc CheckForHeartBeat(LeaderAlive) returns(LeaderAlive);
 }
 
 
@@ -21,6 +22,9 @@ message LeaderElectionrequest{
 message ElectedLeader{
 	int64 Priority=1;
     string IpAddress=2;
+}
+message LeaderAlive{
+
 }
 
 

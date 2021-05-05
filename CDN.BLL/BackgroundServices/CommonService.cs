@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,19 +7,26 @@ namespace CDN.BLL.BackgroundServices
 {
     public class CommonServices : BackgroundService
     {
-  
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             setCurrentNodeDetails();
-            CreateGRPCServers();
             HostZookeeperConnection();
-           
+            CreateGRPCServers();
         }
 
         private void HostZookeeperConnection()
         {
-            BLL.Statics.zk = new CDN.BLL.Zookeeper.ZookeeperService().GetZookeeperService();
-            _ = BLL.Statics.zk.CreateNodeForcurrent();
+            try
+            {
+                BLL.Statics.zk = new CDN.BLL.Zookeeper.ZookeeperService().GetZookeeperService();
+                _ = BLL.Statics.zk.CreateNodeForcurrent();
+            }
+            catch (Exception exyh)
+            {
+
+                throw;
+            }
         }
 
         private void CreateGRPCServers()
@@ -35,7 +39,8 @@ namespace CDN.BLL.BackgroundServices
         private static void setCurrentNodeDetails()
         {
             Guid id = Guid.NewGuid();
-            BOD.NodeDetails.Ip = "127.0.0.1";
+           // BOD.NodeDetails.Ip = "192.168.208.1";
+           BOD.NodeDetails.Ip = "127.0.0.1";
             BOD.NodeDetails.Host = 10110;
             BOD.NodeDetails.UniqueId = id.ToString();
             BOD.NodeDetails.Priority = DateTime.UtcNow.Ticks;

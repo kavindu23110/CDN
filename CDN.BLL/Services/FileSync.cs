@@ -14,7 +14,7 @@ namespace CDN.BLL.Services
 
         public FileSync()
         {
-            zk = new Zookeeper.ZookeeperService().GetZookeeperService();
+            zk = CDN.BLL.Statics.zk;
             var nodes = zk.GetClusterNodes(BOD.NodeDetails.ClusterName);
             clients = CreateGRPCClients(nodes);
         }
@@ -26,9 +26,11 @@ namespace CDN.BLL.Services
             {
                 if (item.Value != BOD.NodeDetails.Ip)
                 {
+
                     var client = new GRPC.FileSystem.GRPCClient_FileSystem(item.Value, BOD.SystemPorts.Fileshare);
                     clients.Add(client);
                 }
+
             }
             return clients;
         }
@@ -57,7 +59,8 @@ namespace CDN.BLL.Services
         {
 
             var obj = new CDN.GRPC.protobuf.FileOnChangeData();
-            obj.OldPath = GetRelativeFilePath(e.FullPath); ;
+            obj.OldPath = GetRelativeFilePath(e.FullPath);
+
 
             obj.OperationType = BOD.StaticLists.FileOperations.Change.ToString();
             obj.Content = ByteString.CopyFrom(new FileHandler().ReadFile(e.FullPath.ToString()));
@@ -85,6 +88,7 @@ namespace CDN.BLL.Services
             var obj = new CDN.GRPC.protobuf.FileOnChangeData();
             obj.OldPath = GetRelativeFilePath(e.FullPath); ;
             obj.OperationType = BOD.StaticLists.FileOperations.Delete.ToString();
+
             SendRequestsToLstClients(obj, BOD.StaticLists.FileOperations.Delete);
         }
 
@@ -95,6 +99,7 @@ namespace CDN.BLL.Services
             obj.OldPath = GetRelativeFilePath(e.OldFullPath);
             obj.OldFileName = e.OldName;
             obj.NewFileName = e.Name;
+
             obj.OperationType = BOD.StaticLists.FileOperations.Rename.ToString();
             SendRequestsToLstClients(obj, BOD.StaticLists.FileOperations.Rename);
         }

@@ -46,25 +46,27 @@ namespace CDN
       
             app.UseRewriter(new RewriteOptions().Add(new RedirectWwwRule()));
             app.UseDirectoryBrowser();
-            app.UseStaticFiles(new StaticFileOptions
-            {
+            app.UseStaticFiles(
+                new StaticFileOptions{
                 FileProvider = new PhysicalFileProvider(
    BOD.SystemParameters.FileHostPath),
                 RequestPath = "/Files"
             });
-            //app.UseStaticFiles(new StaticFileOptions()
-            //{
-            //    HttpsCompression = Microsoft.AspNetCore.Http.Features.HttpsCompressionMode.Compress,
-            //    OnPrepareResponse = (context) =>
-            //    {
-            //        var headers = context.Context.Response.GetTypedHeaders();
-            //        headers.CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue
-            //        {
-            //            Public = true,
-            //            MaxAge = TimeSpan.FromDays(30)
-            //        };
-            //    }
-            //});
+
+      
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                HttpsCompression = Microsoft.AspNetCore.Http.Features.HttpsCompressionMode.Compress,
+                OnPrepareResponse = (context) =>
+                {
+                    var headers = context.Context.Response.GetTypedHeaders();
+                    headers.CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue
+                    {
+                        Public = true,
+                        MaxAge = TimeSpan.FromDays(30)
+                    };
+                }
+            });
 
             app.UseRouting();
 

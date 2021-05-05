@@ -18,7 +18,6 @@ namespace CDN.BLL.Services
 
         public VotingForNearestNode(RewriteContext context)
         {
-            //x = new GRPCServer_NodeVoting(BOD.NodeDetails.Ip, BOD.SystemPorts.nearestnode);
             this.context = context;
             this.zKService = BLL.Statics.zk;
         }
@@ -26,7 +25,6 @@ namespace CDN.BLL.Services
         public VotingForNearestNode()
         {
             this.zKService = BLL.Statics.zk;
-            //x = new GRPCServer_NodeVoting(BOD.NodeDetails.Ip, BOD.SystemPorts.nearestnode);
         }
 
         public async System.Threading.Tasks.Task<string> FindNearestNodeAsync(System.Net.IPAddress requestIp)

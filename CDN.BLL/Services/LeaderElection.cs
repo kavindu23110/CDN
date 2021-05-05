@@ -10,10 +10,34 @@ namespace CDN.BLL.Services
     {
         private ZookeeperService zKService;
 
+       // public GRPCClient_LeaderElection GRPCClients { get; private set; }
 
-        public LeaderElection(ZookeeperService zKService)
+        public LeaderElection()
         {
             this.zKService = BLL.Statics.zk;
+        
+          
+        }
+
+        public async System.Threading.Tasks.Task CheckForleaderHeartBeatAsync()
+        {
+            CDN.GRPC.protobuf.LeaderAlive alive = null;
+              
+            try
+            {
+                var GRPCClient = new BLL.GRPC.LeaderElection.GRPCClient_LeaderElection(BOD.NodeDetails.LeaderNode, BOD.SystemPorts.LeaderElection);
+                alive =await GRPCClient.Client.CheckForHeartBeatAsync(new CDN.GRPC.protobuf.LeaderAlive(), deadline: DateTime.UtcNow.AddSeconds(2));
+                if (alive==null)
+                {
+                    ElectLeader();
+                }
+            }
+            catch (Exception ex )
+            {
+
+                ElectLeader();
+            }
+            
         }
 
         internal void ElectLeader()
