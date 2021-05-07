@@ -12,16 +12,15 @@ service FileSystemGRPC
 
     rpc FileOnChange( FileOnChangeData)returns(Response) ;
     rpc FileOnCreate(FileOnCreateData)returns(Response) ;
-    rpc FileSystemOnStart(stream FileDetailsMD5)returns(stream FileDetails) ;
+    rpc FileSystemOnCheck(FileDetails)returns(stream FileDetails) ;
 }
 
 
-message FileDetailsMD5
+message FileDetails
 {
-  string Filepath=1;
-   string FileName=2;
-   string Extention=3;
-    string MD5Hash=6;
+   string Filepath=1;
+   string MD5Hash=2;
+   bytes Content=3;
 }
 
 message FileOnChangeData
@@ -50,8 +49,4 @@ message Response{
 
 }
 
-message FileDetails{
-  Response response=1;
-  FileOnChangeData file=2;
-}
 

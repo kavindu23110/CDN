@@ -2,8 +2,10 @@
 using CDN.BLL.GRPC.FileSystem;
 using CDN.BLL.Zookeeper;
 using Google.Protobuf;
+using Grpc.Core;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace CDN.BLL.Services
 {
@@ -12,11 +14,38 @@ namespace CDN.BLL.Services
         private ZookeeperService zk;
         private List<GRPCClient_FileSystem> clients;
 
+        public GRPCClient_FileSystem Initialclient { get;private set; }
+
         public FileSync()
         {
             zk = CDN.BLL.Statics.zk;
             var nodes = zk.GetClusterNodes(BOD.NodeDetails.ClusterName);
             clients = CreateGRPCClients(nodes);
+        }
+
+        public FileSync(string ip)
+        {
+          Initialclient = new GRPC.FileSystem.GRPCClient_FileSystem(ip, BOD.SystemPorts.Fileshare);
+        }
+
+
+        internal async System.Threading.Tasks.Task InitialFilecopyAsync()
+        {
+            var fh = new FileHandler();
+            var stream =  Initialclient.Client.FileSystemOnCheck(new CDN.GRPC.protobuf.FileDetails());
+
+            var readTask = Task.Run(async () =>
+            {
+                await foreach (var response in stream.ResponseStream.ReadAllAsync())
+                {
+                    await fh.FileCompareByMD5AndreplaceAsync(response);
+                }
+            });
+      
+
+         
+            await readTask;
+            Initialclient.Stop_Channel();
         }
 
         private List<GRPCClient_FileSystem> CreateGRPCClients(List<KeyValuePair<long, string>> lstSelected)

@@ -27,7 +27,7 @@ namespace CDN.BLL.BackgroundServices
                 NotifyFilters.Security |
                  NotifyFilters.Size;
                 watcher.Filter = "*.*";
-                //watcher.Changed += new FileSystemEventHandler(OnChanged);
+                
                 watcher.Created += new FileSystemEventHandler(OnCreated);
                 watcher.Deleted += new FileSystemEventHandler(OnDeleted);
                watcher.Renamed += new RenamedEventHandler(OnRenamed);

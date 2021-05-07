@@ -9,12 +9,12 @@ namespace CDN.BOD
         public static long Countrylattitude= (long)80.7718;
 
        // public static string ZookeeperHost= "192.168.1.100:8569";
-        public static string ZookeeperHost= "192.168.1.100:8569";
+        public static string ZookeeperHost= "127.0.0.1:8569";
         public static string ClusterName= "cluster1";
         public static int Vote =0;
 
-        public static string Ip { get; set; }
-        public static int port { get; set; }
+        public static string Ip = "127.0.0.1";
+
         public static string UniqueId { get; set; }
         public static long Priority { get; set; }
         public static string LeaderNode { get; set; }
@@ -25,7 +25,7 @@ namespace CDN.BOD
 
     public static class SystemParameters
     {
-        public static string FileHostPath = "D:/temp";
+        public static string FileHostPath = "D:/temp1";
 
         public static double RequestDeadline = 200;
     }

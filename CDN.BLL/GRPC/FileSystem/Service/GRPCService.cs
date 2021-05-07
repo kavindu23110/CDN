@@ -48,15 +48,22 @@ namespace CDN.BLL.GRPC.FileSystem.Service
             return Task.FromResult(new Response());
         }
 
+
+
+        public override async Task FileSystemOnCheck(FileDetails request, IServerStreamWriter<FileDetails> responseStream, ServerCallContext context)
+        {
+            var fh = new FileHandler();
+
+            var obj = fh.ProcessDirectory(BOD.SystemParameters.FileHostPath).GetEnumerator();
+            while (obj.MoveNext())
+            {
+            await  responseStream.WriteAsync(obj.Current);
+            }
+
        
 
-        public override Task FileSystemOnStart(IAsyncStreamReader<FileDetailsMD5> requestStream, IServerStreamWriter<FileDetails> responseStream, ServerCallContext context)
-        {
-            return base.FileSystemOnStart(requestStream, responseStream, context);
         }
 
-
-   
     }
 }
 

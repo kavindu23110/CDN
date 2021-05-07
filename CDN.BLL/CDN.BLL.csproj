@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Consul" Version="1.6.1.1" />
     <PackageReference Include="GeoCoordinate.NetCore" Version="1.0.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Rewrite" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -18,11 +17,6 @@
   <ItemGroup>
     <ProjectReference Include="..\CDN.BOD\CDN.BOD.csproj" />
     <ProjectReference Include="..\CDN.GRPC\CDN.GRPC.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Cache\" />
-    <Folder Include="Interfaces\" />
   </ItemGroup>
 
 </Project>

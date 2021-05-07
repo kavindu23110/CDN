@@ -15,8 +15,8 @@ namespace CDN.BLL.Services
         public LeaderElection()
         {
             this.zKService = BLL.Statics.zk;
-        
-          
+
+
         }
 
         public async System.Threading.Tasks.Task CheckForleaderHeartBeatAsync()
@@ -42,7 +42,8 @@ namespace CDN.BLL.Services
 
         internal void ElectLeader()
         {
-             var LstNodes = zKService.GetClusterNodes(BOD.NodeDetails.ClusterName);
+            this.zKService = BLL.Statics.zk;
+            var LstNodes = zKService.GetClusterNodes(BOD.NodeDetails.ClusterName);
             var LstSelected = SelectHighPriorityNodes(LstNodes);
             _ = ProceedToElectionAsync(LstSelected);
         }

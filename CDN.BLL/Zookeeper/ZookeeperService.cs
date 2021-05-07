@@ -106,12 +106,7 @@ namespace CDN.BLL.Zookeeper
 
         }
 
-        //private bool CheckChildNodesexist(string path)
-        //{
-        //    var x = (List<string>)zk.GetChildren(path, true);
-        //    var c = (x.Count) > 0;
-        //  return c;
-        //}
+
         public List<string> GetChildNodes(string path)
         {
             return (List<string>)zk.GetChildren(path, true);

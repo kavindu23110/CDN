@@ -30,7 +30,7 @@ namespace CDN
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                   webBuilder.UseKestrel(option => { option.Listen(IPAddress.Parse("127.0.0.1"), 12243); });
+                   webBuilder.UseKestrel(option => { option.Listen(IPAddress.Parse(BOD.NodeDetails.Ip), 12245); });
                     webBuilder.UseStartup<Startup>();
                 }).ConfigureServices(
                 service =>

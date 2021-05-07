@@ -8,7 +8,6 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.IO;
 
 namespace CDN
 {
@@ -21,7 +20,7 @@ namespace CDN
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -32,7 +31,7 @@ namespace CDN
             services.AddControllers();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory
       )
         {
@@ -41,19 +40,20 @@ namespace CDN
                 app.UseDeveloperExceptionPage();
             }
 
-          
+
             app.UseHttpsRedirection();
-      
+
             app.UseRewriter(new RewriteOptions().Add(new RedirectWwwRule()));
             app.UseDirectoryBrowser();
             app.UseStaticFiles(
-                new StaticFileOptions{
-                FileProvider = new PhysicalFileProvider(
+                new StaticFileOptions
+                {
+                    FileProvider = new PhysicalFileProvider(
    BOD.SystemParameters.FileHostPath),
-                RequestPath = "/Files"
-            });
+                    RequestPath = "/Files"
+                });
 
-      
+
             app.UseStaticFiles(new StaticFileOptions()
             {
                 HttpsCompression = Microsoft.AspNetCore.Http.Features.HttpsCompressionMode.Compress,
@@ -63,35 +63,23 @@ namespace CDN
                     headers.CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue
                     {
                         Public = true,
-                        MaxAge = TimeSpan.FromDays(30)
+                        MaxAge = TimeSpan.FromMinutes(10)
                     };
                 }
             });
 
             app.UseRouting();
 
-            // app.UseAuthorization();
+
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-     
+
 
             });
         }
 
-        //private StaticFileOptions CreateNewStaticfilesPath(IWebHostEnvironment env)
-        //{
-        //    var x = Path.Combine(env.ContentRootPath, "Files");
-        //    return new StaticFileOptions
-        //    {
-        //        FileProvider = new PhysicalFileProvider(
-        //        Path.Combine(env.ContentRootPath, "Files")),
-        //        RequestPath = "/StaticFiles"
-        //    };
-
-
-        //}
 
     }
 }

@@ -1,6 +1,4 @@
-﻿using CDN.BLL.Services;
-using System;
-using ZooKeeperNet;
+﻿using ZooKeeperNet;
 
 namespace CDN.BLL.Zookeeper
 {
@@ -17,20 +15,7 @@ namespace CDN.BLL.Zookeeper
 
         public void Process(WatchedEvent @event)
         {
-            //if (@event.Type == EventType.NodeChildrenChanged)
-            //{
-                
-            //    Console.WriteLine(@event.Path);
-            //}
 
-
-            if (@event.Type == EventType.NodeDeleted && !@event.Path.Contains(BOD.NodeDetails.ClusterName + "-Leader"))
-            {
-                //if (@event.Path.Contains(BOD.NodeDetails.LeaderNode))
-                //{
-                //    new LeaderElection().ElectLeader();
-                //}
-            }
         }
     }
 }

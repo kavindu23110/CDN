@@ -38,7 +38,7 @@ namespace CDN.BLL.Vote
             var sCoord = new GeoCoordinate(BOD.NodeDetails.Countrylattitude, BOD.NodeDetails.Countrylattitude);
             var eCoord = new GeoCoordinate(info.lon, info.lat);
 
-            return (long)(sCoord.GetDistanceTo(eCoord) * 0.1);
+            return (long)(sCoord.GetDistanceTo(eCoord) * 0.01);
         }
     }
 }
