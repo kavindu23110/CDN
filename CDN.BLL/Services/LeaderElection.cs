@@ -50,6 +50,7 @@ namespace CDN.BLL.Services
 
         private async System.Threading.Tasks.Task ProceedToElectionAsync(List<KeyValuePair<long, string>> lstSelected)
         {
+            Console.WriteLine("Leader Election Started");
             var clients = CreateGRPCClients(lstSelected);
             var response = SendLeaderElectionRequest(clients);//true=have higher nodes 
             if (response.Result)
@@ -62,6 +63,7 @@ namespace CDN.BLL.Services
                 BOD.NodeDetails.LeaderNode = BOD.NodeDetails.Ip;
                 zKService.CreateLeaderNode(BOD.NodeDetails.LeaderNode);
                 zKService.SetDataToNode($"/{BOD.NodeDetails.ClusterName}", BOD.NodeDetails.Ip);
+              
                 await BroadcastElectedLeaderAsync(electedLeader);
             }
         }
@@ -75,6 +77,7 @@ namespace CDN.BLL.Services
                 _ = await client.Client.BroadcastElectedLeaderAsync(electedLeader);
                 client.Stop_Channel();
             }
+            Console.WriteLine("Elected as Leader :" + BOD.NodeDetails.LeaderNode);
         }
 
         private async System.Threading.Tasks.Task<bool> SendLeaderElectionRequest(List<GRPCClient_LeaderElection> clients)

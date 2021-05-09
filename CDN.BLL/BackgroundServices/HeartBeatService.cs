@@ -23,7 +23,7 @@ namespace CDN.BLL.BackgroundServices
         {
 
 
-            TimeSpan interval = TimeSpan.FromSeconds(30);
+            TimeSpan interval = TimeSpan.FromSeconds(2);
             Action action = () =>
             {
 

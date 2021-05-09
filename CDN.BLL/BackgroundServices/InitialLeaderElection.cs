@@ -19,7 +19,7 @@ namespace CDN.BLL.BackgroundServices
 
             if (BOD.NodeDetails.LeaderNode != BOD.NodeDetails.Ip)
             {
-                new FileSync(CDN.BOD.NodeDetails.Ip).InitialFilecopyAsync();
+                new FileSync(CDN.BOD.NodeDetails.LeaderNode).InitialFilecopyAsync();
             }
 
         }

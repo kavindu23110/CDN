@@ -98,9 +98,9 @@ namespace CDN.BLL.Services
 
         internal void OnFileCreated(FileSystemEventArgs e)
         {
-            var obj = new CDN.GRPC.protobuf.FileOnChangeData();
-            obj.NewFileName = e.Name;
-            obj.NewPath = GetRelativeFilePath(e.FullPath); ;
+            var obj = new CDN.GRPC.protobuf.FileOnCreateData();
+            obj.FileName = e.Name;
+            obj.Filepath= GetRelativeFilePath(e.FullPath); ;
             obj.OperationType = BOD.StaticLists.FileOperations.Create.ToString();
             obj.Content = ByteString.CopyFrom(new FileHandler().ReadFile(e.FullPath.ToString()));
 

@@ -13,7 +13,8 @@ namespace CDN.BOD
         public static string ClusterName= "cluster1";
         public static int Vote =0;
 
-        public static string Ip = "127.0.0.1";
+       public static string Ip = "127.0.0.1";
+    // public static string Ip = "192.168.208.1";
 
         public static string UniqueId { get; set; }
         public static long Priority { get; set; }
@@ -25,7 +26,7 @@ namespace CDN.BOD
 
     public static class SystemParameters
     {
-        public static string FileHostPath = "D:/temp1";
+        public static string FileHostPath = "D:/temp";
 
         public static double RequestDeadline = 200;
     }

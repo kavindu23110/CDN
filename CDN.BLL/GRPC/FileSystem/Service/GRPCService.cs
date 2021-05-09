@@ -26,7 +26,7 @@ namespace CDN.BLL.GRPC.FileSystem.Service
                     case "Change":
                         break;
                     case "Rename":
-                        FileSystem.RenameFile(request);
+                        FileSystem.RenameFile(request,null);
                         break;
                     case "Delete":
                         FileSystem.DeleteFile(request.OldPath);

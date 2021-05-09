@@ -63,11 +63,15 @@ namespace CDN.BLL.Zookeeper
         {
             try
             {
-                var xsdf = zk.GetChildren("/", false);
+         
                 var d = GetChildNodes("/").Where(p => p == BOD.NodeDetails.ClusterName).ToList().Count;
                 if (d == 0)
                 {
                     zk.Create($"/{BOD.NodeDetails.ClusterName}", "mydata".GetBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.Persistent);
+                }
+                if (GetChildNodes($"/{BOD.NodeDetails.ClusterName}").Where(p => p == $"/{BOD.NodeDetails.ClusterName}/{BOD.NodeDetails.Ip}-{BOD.NodeDetails.UniqueId}").ToList().Count>0)
+                {;
+                    zk.Delete($"/{BOD.NodeDetails.ClusterName}/{BOD.NodeDetails.Ip}-{BOD.NodeDetails.UniqueId}",0);
                 }
                 zk.Create($"/{BOD.NodeDetails.ClusterName}/{BOD.NodeDetails.Ip}-{BOD.NodeDetails.UniqueId}", BOD.NodeDetails.Priority.ToString().GetBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.Ephemeral);
                 setLeaderNode();

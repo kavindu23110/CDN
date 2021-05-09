@@ -34,7 +34,7 @@ namespace CDN.BLL.FileSystem
         public static CDN.GRPC.protobuf.FileDetails ProcessFile(string path)
         {
            var details=new CDN.GRPC.protobuf.FileDetails();
-            details.Filepath = path;
+            details.Filepath = setRelativepath(path);
             details.MD5Hash = CalculateMD5(path);
             details.Content = ByteString.CopyFrom(new FileHandler().ReadFile(path)); ;
             return details;
@@ -42,7 +42,9 @@ namespace CDN.BLL.FileSystem
   
         public static string CalculateMD5(string path)
         {
-         
+
+            try
+            {
                 using (var md5 = MD5.Create())
                 {
                     using (var stream = File.OpenRead(path))
@@ -51,12 +53,18 @@ namespace CDN.BLL.FileSystem
                         return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
                     }
                 }
+            }
+            catch (Exception)
+            {
+
+                return string.Empty;
+            }
             
         }
 
         internal async Task FileCompareByMD5AndreplaceAsync(CDN.GRPC.protobuf.FileDetails current)
         {
-            var code = CalculateMD5(current.Filepath);
+            var code = CalculateMD5( GetAbsolutePath(  current.Filepath));
             if (!code.Equals(current.MD5Hash))
             {
               RenameFile(null, current);
@@ -75,7 +83,7 @@ namespace CDN.BLL.FileSystem
 
        
 
-        public byte[] ReadFile(string path)
+        public  byte[] ReadFile(string path)
         {
             var file = File.ReadAllBytes(path);
             return file;
@@ -130,6 +138,12 @@ namespace CDN.BLL.FileSystem
         {
             var path = BOD.SystemParameters.FileHostPath + filepath;
             return path.Replace("//", "/");
+        }
+
+        private static string setRelativepath(string filepath)
+        {
+            var path= filepath.Replace("//", "/");
+            return path.Replace(BOD.SystemParameters.FileHostPath, string.Empty).Trim();
         }
         public bool CreateDirectory(string path)
         {
