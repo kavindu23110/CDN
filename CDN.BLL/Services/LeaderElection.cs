@@ -63,7 +63,7 @@ namespace CDN.BLL.Services
                 BOD.NodeDetails.LeaderNode = BOD.NodeDetails.Ip;
                 zKService.CreateLeaderNode(BOD.NodeDetails.LeaderNode);
                 zKService.SetDataToNode($"/{BOD.NodeDetails.ClusterName}", BOD.NodeDetails.Ip);
-              
+                Console.WriteLine("Elected as Leader :" + BOD.NodeDetails.LeaderNode);
                 await BroadcastElectedLeaderAsync(electedLeader);
             }
         }
@@ -77,7 +77,7 @@ namespace CDN.BLL.Services
                 _ = await client.Client.BroadcastElectedLeaderAsync(electedLeader);
                 client.Stop_Channel();
             }
-            Console.WriteLine("Elected as Leader :" + BOD.NodeDetails.LeaderNode);
+          
         }
 
         private async System.Threading.Tasks.Task<bool> SendLeaderElectionRequest(List<GRPCClient_LeaderElection> clients)

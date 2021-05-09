@@ -11,14 +11,13 @@ namespace CDN
     {
         
 
-        public HttpContext http { get; private set; }
-    
+  
 
         public void ApplyRule(RewriteContext context)
         {
             var nearestnode = GetNearestNodeAsync(context).Result;
-            var request = context.HttpContext.Request;
-            var t = request.Host + request.Path;
+            var response = context.HttpContext.Response;
+            response.Headers[HeaderNames.Location] = nearestnode;
             if (nearestnode.Length > 0)
             {
                 if (new Uri(nearestnode).Host == BOD.NodeDetails.Ip)
@@ -26,10 +25,8 @@ namespace CDN
                     context.Result = RuleResult.ContinueRules;
                     return;
                 }
-            }
-            var response = context.HttpContext.Response;
+            } 
             response.StatusCode = (int)HttpStatusCode.MovedPermanently; ;
-            response.Headers[HeaderNames.Location] = nearestnode;
             context.Result = RuleResult.EndResponse;
 
         }

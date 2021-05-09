@@ -41,8 +41,6 @@ namespace CDN
             }
 
 
-            app.UseHttpsRedirection();
-
             app.UseRewriter(new RewriteOptions().Add(new RedirectWwwRule()));
             app.UseDirectoryBrowser();
             app.UseStaticFiles(

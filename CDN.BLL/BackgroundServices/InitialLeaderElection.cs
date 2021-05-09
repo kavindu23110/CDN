@@ -16,7 +16,7 @@ namespace CDN.BLL.BackgroundServices
             {
             new CDN.BLL.Services.LeaderElection().ElectLeader(); 
             }
-
+            Console.WriteLine("Elected as Leader :" + BOD.NodeDetails.LeaderNode);
             if (BOD.NodeDetails.LeaderNode != BOD.NodeDetails.Ip)
             {
                 new FileSync(CDN.BOD.NodeDetails.LeaderNode).InitialFilecopyAsync();

@@ -39,7 +39,6 @@ namespace CDN.BLL.BackgroundServices
         private static void setCurrentNodeDetails()
         {
             Guid id = Guid.NewGuid();
-            BOD.NodeDetails.Host = 10110;
             BOD.NodeDetails.UniqueId = id.ToString();
             BOD.NodeDetails.Priority = DateTime.UtcNow.Ticks;
 
