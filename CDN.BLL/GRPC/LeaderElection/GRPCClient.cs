@@ -1,4 +1,4 @@
-﻿using CDN.GRPC.BsaeClass;
+﻿using CDN.GRPC.BaseClass;
 
 namespace CDN.BLL.GRPC.LeaderElection
 {

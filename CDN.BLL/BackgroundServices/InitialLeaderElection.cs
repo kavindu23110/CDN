@@ -14,9 +14,14 @@ namespace CDN.BLL.BackgroundServices
         {
             if (BOD.NodeDetails.LeaderNode == null)
             {
-            new CDN.BLL.Services.LeaderElection().ElectLeader(); 
+            new CDN.BLL.Services.LeaderElection().ElectLeader();
+                Console.WriteLine("Elected as Leader :" + BOD.NodeDetails.LeaderNode);
             }
-            Console.WriteLine("Elected as Leader :" + BOD.NodeDetails.LeaderNode);
+            else
+            {
+                Console.WriteLine("select as Leader :" + BOD.NodeDetails.LeaderNode);
+            }
+           
             if (BOD.NodeDetails.LeaderNode != BOD.NodeDetails.Ip)
             {
                 new FileSync(CDN.BOD.NodeDetails.LeaderNode).InitialFilecopyAsync();

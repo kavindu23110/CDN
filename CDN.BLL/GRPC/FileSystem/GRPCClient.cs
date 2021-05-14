@@ -1,4 +1,4 @@
-﻿using CDN.GRPC.BsaeClass;
+﻿using CDN.GRPC.BaseClass;
 using CDN.GRPC.protobuf;
 
 namespace CDN.BLL.GRPC.FileSystem

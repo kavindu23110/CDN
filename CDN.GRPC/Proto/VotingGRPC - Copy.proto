@@ -10,8 +10,9 @@ package google.protobuf;
 service NodeVotingGRPC
 {
 rpc InitiatePaxosRequest(Initia1PaxosRequest) returns(Initia1PaxosRequest);
-rpc AcceptAcceptanceRequest(PaxosRequest) returns(PaxosResponse);
-
+rpc AcceptAcceptanceRequest(PaxosRequest) returns(google.protobuf.Empty);
+rpc SendPaxosAccptanceToLearner(PaxosResponse) returns(google.protobuf.Empty);
+rpc SendPaxosAccptanceToLeader(PaxosResponse) returns(google.protobuf.Empty);
 
 }
 

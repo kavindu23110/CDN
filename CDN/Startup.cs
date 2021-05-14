@@ -61,7 +61,7 @@ namespace CDN
                     headers.CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue
                     {
                         Public = true,
-                        MaxAge = TimeSpan.FromMinutes(10)
+                        MaxAge = TimeSpan.FromMinutes(1)
                     };
                 }
             });
