@@ -1,40 +1,44 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CDN.BLL.Zookeeper;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using System.Net;
 
 namespace CDN
 {
     public class Program
     {
-        private static ZookeeperService zk;
+
 
         public static void Main(string[] args)
         {
-            setCurrentNodeDetails();
-            zk = new CDN.BLL.Zookeeper.ZookeeperService();
-            CreateHostBuilder(args).Build().Run();
-            
 
+
+            try
+            {
+                CreateHostBuilder(args).Build().Run();
+            }
+            catch (System.Exception ex)
+            {
+
+                throw;
+            }
         }
 
-        private static void setCurrentNodeDetails()
-        {
-            BOD.NodeDetails.Ip = "127.0.0.1";
-        }
+
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.UseKestrel(option => { option.Listen(IPAddress.Parse(BOD.NodeDetails.Ip), BOD.NodeDetails.Port); });
                     webBuilder.UseStartup<Startup>();
+                }).ConfigureServices(
+                service =>
+                {
+                    service.AddHostedService<CDN.BLL.BackgroundServices.CommonServices>();
+                    service.AddHostedService<CDN.BLL.BackgroundServices.FileWatcherService>();
+                    service.AddHostedService<CDN.BLL.BackgroundServices.InitialLeaderElection>();
+                    service.AddHostedService<CDN.BLL.BackgroundServices.HeartBeatService>();
                 });
     }
 }

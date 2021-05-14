@@ -1,58 +1,161 @@
-﻿using ZooKeeperNet;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
+using ZooKeeperNet;
 
 namespace CDN.BLL.Zookeeper
 {
-  public  class ZookeeperService
+    public class ZookeeperService
     {
-        private ZooKeeper zk;
+        private ZookeeperService ZKService;
 
+        private ZooKeeper zk;
         public ZookeeperService()
         {
-            zk = new ZooKeeper(BOD.NodeDetails.ZookeeperHost, new TimeSpan(0, 0, 0, 50000), new CDN.BLL.Zookeeper.Watcher());
-            using (ZooKeeper zk = new ZooKeeper("127.0.0.1:8569", new TimeSpan(0, 0, 0, 50000), new Watcher()))
+            if (zk == null)
             {
-                var stat = zk.Exists("/root", true);
+                zk = new ZooKeeper(BOD.NodeDetails.ZookeeperHost, new TimeSpan(0, 0, 0, 50000), new CDN.BLL.Zookeeper.Watcher(ZKService));
 
-                ////create a node root, data mydata, not ACL access control, node is permanent
-                //zk.Create("/root", "mydata".GetBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.Persistent);
+                Task.Delay(2000);
 
-                //Create the root following a childone znode, data childone, not ACL access control, node is permanent   
-                zk.Create("/root/childone", "childone".GetBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.Persistent);
-                //Get the name of the child node under the/root node, returns List <String>   
-                zk.GetChildren("/root", true);
-                //data acquired in the root//childone node, returns byte []   
-                zk.GetData("/root/childone", true, null);
-
-                //modify data in a node/root/childone, third parameter version, if it is -1, it will
-                zk.SetData("/root/childone", "childonemodify".GetBytes(), -1);
-                //delete/root/childone this node, the second parameter version, -1, then delete, ignore version   
-                zk.Delete("/root/childone", -1);
             }
-            CreateNodeForcurrent();
         }
 
-        private void CreateNodeForcurrent()
+        public ZookeeperService GetZookeeperService()
         {
-           zk.Exists("/root", true);
-            //zk.Create("/root", null, Ids.OPEN_ACL_UNSAFE, CreateMode.Persistent);
+            if (ZKService == null)
+            {
 
-            ////create a node root, data mydata, not ACL access control, node is permanent
-            //zk.Create("/root", "mydata".GetBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.Persistent);
+                ZKService = new ZookeeperService();
 
-            //Create the root following a childone znode, data childone, not ACL access control, node is permanent   
-            zk.Create($"/root/{BOD.NodeDetails.Ip}", BOD.NodeDetails.Country.GetBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.Persistent);
-            //Get the name of the child node under the/root node, returns List <String>   
-            zk.GetChildren("/root", true);
-            //data acquired in the root//childone node, returns byte []   
-            zk.GetData("/root/childone", true, null);
+            }
 
-            //modify data in a node/root/childone, third parameter version, if it is -1, it will
-            zk.SetData("/root/childone", "childonemodify".GetBytes(), -1);
-            //delete/root/childone this node, the second parameter version, -1, then delete, ignore version   
-            zk.Delete("/root/childone", -1);
+            return ZKService;
+        }
+        public void CreateLeaderNode(string LeaderIp)
+        {
+            try
+            {
+                var ssn = GetChildNodes($"/");
+                var root = BOD.NodeDetails.ClusterName + "-Leader";
+                var d = GetChildNodes("/").Where(p => p == root).ToList().Count;
+                if (d == 0)
+                {
+                    zk.Create($"/{root}", "mydata".GetBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.Persistent);
+                }
+                var ss = GetChildNodes($"/{root}");
+                foreach (var item in GetChildNodes($"/{root}"))
+                {
+                    zk.Delete($"/{root}/{item}", 0);
+                }
+                zk.Create($"/{root}/{LeaderIp}", LeaderIp.GetBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.Ephemeral);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+
+        public bool CreateNodeForcurrent()
+        {
+            try
+            {
+         
+                var d = GetChildNodes("/").Where(p => p == BOD.NodeDetails.ClusterName).ToList().Count;
+                if (d == 0)
+                {
+                    zk.Create($"/{BOD.NodeDetails.ClusterName}", "mydata".GetBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.Persistent);
+                }
+                if (GetChildNodes($"/{BOD.NodeDetails.ClusterName}").Where(p => p == $"/{BOD.NodeDetails.ClusterName}/{BOD.NodeDetails.Ip}-{BOD.NodeDetails.UniqueId}").ToList().Count>0)
+                {;
+                    zk.Delete($"/{BOD.NodeDetails.ClusterName}/{BOD.NodeDetails.Ip}-{BOD.NodeDetails.UniqueId}",0);
+                }
+                zk.Create($"/{BOD.NodeDetails.ClusterName}/{BOD.NodeDetails.Ip}-{BOD.NodeDetails.UniqueId}", BOD.NodeDetails.Priority.ToString().GetBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.Ephemeral);
+                setLeaderNode();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
+            return true;
+        }
+
+        private void setLeaderNode()
+        {
+            try
+            {
+                var root = BOD.NodeDetails.ClusterName + "-Leader";
+                var d = GetChildNodes("/").Where(p => p == root).ToList().Count;
+                if (d == 0)
+                {
+                    return;
+                }
+                var data = GetChildNodes($"/{root}").FirstOrDefault();
+                if (null != data)
+                {
+                    BOD.NodeDetails.LeaderNode = data;
+                    return;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+
+        public List<string> GetChildNodes(string path)
+        {
+            return (List<string>)zk.GetChildren(path, true);
+        }
+        public List<KeyValuePair<long, string>> GetClusterNodes(string ClusterName)
+        {
+            List<KeyValuePair<long, string>> kv = new List<KeyValuePair<long, string>>();
+            var nodes = (List<string>)zk.GetChildren("/" + ClusterName, true);
+            foreach (var item in nodes)
+            {
+                var byteArray = zk.GetData($"/{ BOD.NodeDetails.ClusterName}/{item}", true, null);
+
+                kv.Add(new KeyValuePair<long, string>(ByteToLong(byteArray), item.Substring(0, item.IndexOf("-"))));
+            }
+            return kv;
+        }
+        public string GetDataFromNode(string path)
+        {
+            var s = zk.GetData(path, true, null);
+            if (s.Length == 0)
+            {
+                return null;
+            }
+            return ByteToString(s);
+        }
+        public void SetDataToNode(string path, string data)
+        {
+            zk.SetData(path, data.GetBytes(), -1);
+
+        }
+
+        private long ByteToLong(byte[] byteArray)
+        {
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(byteArray);
+
+            return BitConverter.ToInt64(byteArray, 0);
+        }
+
+        private string ByteToString(byte[] byteArray)
+        {
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(byteArray);
+
+            return BitConverter.ToString(byteArray, 0);
         }
     }
 }

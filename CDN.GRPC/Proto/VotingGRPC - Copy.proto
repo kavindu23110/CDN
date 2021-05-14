@@ -1,0 +1,39 @@
+﻿
+syntax = "proto3";
+option csharp_namespace = "CDN.GRPC.protobuf";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+package google.protobuf;
+
+
+
+service NodeVotingGRPC
+{
+rpc InitiatePaxosRequest(Initia1PaxosRequest) returns(Initia1PaxosRequest);
+rpc AcceptAcceptanceRequest(PaxosRequest) returns(google.protobuf.Empty);
+rpc SendPaxosAccptanceToLearner(PaxosResponse) returns(google.protobuf.Empty);
+rpc SendPaxosAccptanceToLeader(PaxosResponse) returns(google.protobuf.Empty);
+
+}
+
+
+
+
+message Initia1PaxosRequest{
+ int64 PID=1;
+ bool success=2;
+}
+message PaxosRequest{
+ int64 PID=1;
+ string ClientIp=3;
+ string FileURL=4;
+}
+
+message PaxosResponse{
+ int64 PID=1;
+ int64 Distance=3;
+ string FileURL=4;
+}
+
+
+

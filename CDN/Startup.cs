@@ -1,18 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace CDN
 {
@@ -25,26 +20,37 @@ namespace CDN
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<CDN.BLL.Zookeeper.ZookeeperService>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddGrpc();
+
+            services.AddOptions();
             services.AddDistributedMemoryCache();
             services.AddControllers();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory
+      )
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-        
-            app.UseHttpsRedirection();
-            //app.UseStaticFiles(
-            //    CreateNewStaticfilesPath(env)
-            //    ); ;
+
+
+            app.UseRewriter(new RewriteOptions().Add(new RedirectWwwRule()));
+            app.UseDirectoryBrowser();
+            app.UseStaticFiles(
+                new StaticFileOptions
+                {
+                    FileProvider = new PhysicalFileProvider(
+   BOD.SystemParameters.FileHostPath),
+                    RequestPath = "/Files"
+                });
+
 
             app.UseStaticFiles(new StaticFileOptions()
             {
@@ -55,29 +61,23 @@ namespace CDN
                     headers.CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue
                     {
                         Public = true,
-                        MaxAge = TimeSpan.FromDays(30)
+                        MaxAge = TimeSpan.FromMinutes(1)
                     };
                 }
             });
 
             app.UseRouting();
 
-            app.UseAuthorization();
+
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+
+
             });
         }
 
-        private StaticFileOptions CreateNewStaticfilesPath(IWebHostEnvironment env)
-        {
-            return new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                Path.Combine(env.ContentRootPath, "MyStaticFiles")),
-                RequestPath = "/StaticFiles"
-            };
-        }
+
     }
 }

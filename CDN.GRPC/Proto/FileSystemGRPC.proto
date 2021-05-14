@@ -1,0 +1,52 @@
+﻿
+syntax = "proto3";
+option csharp_namespace = "CDN.GRPC.protobuf";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+package google.protobuf;
+
+
+
+service FileSystemGRPC
+{
+
+    rpc FileOnChange( FileOnChangeData)returns(Response) ;
+    rpc FileOnCreate(FileOnCreateData)returns(Response) ;
+    rpc FileSystemOnCheck(FileDetails)returns(stream FileDetails) ;
+}
+
+
+message FileDetails
+{
+   string Filepath=1;
+   string MD5Hash=2;
+   bytes Content=3;
+}
+
+message FileOnChangeData
+{
+  string OldPath=1;
+  string NewPath=2;
+     string OldFileName=3;
+   string NewFileName=7;
+   string Extention=4;
+  string OperationType=5;
+    bytes Content=6;
+}
+
+message FileOnCreateData
+{
+  string Filepath=1;
+   string FileName=2;
+   string Extention=3;
+   string OperationType=4;
+    bytes Content=5;
+}
+
+message Response{
+ bool success=1;
+  string Error=2;
+
+}
+
+
