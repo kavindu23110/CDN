@@ -69,11 +69,20 @@ namespace CDN.BLL.Zookeeper
                 {
                     zk.Create($"/{BOD.NodeDetails.ClusterName}", "mydata".GetBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.Persistent);
                 }
-                if (GetChildNodes($"/{BOD.NodeDetails.ClusterName}").Where(p => p == $"/{BOD.NodeDetails.ClusterName}/{BOD.NodeDetails.Ip}-{BOD.NodeDetails.UniqueId}").ToList().Count>0)
-                {;
-                    zk.Delete($"/{BOD.NodeDetails.ClusterName}/{BOD.NodeDetails.Ip}-{BOD.NodeDetails.UniqueId}",0);
+              
+                try
+                {
+                    if (GetChildNodes($"/{BOD.NodeDetails.ClusterName}/{BOD.NodeDetails.Ip}-{BOD.NodeDetails.Priority}").ToList().Count > 0)
+                    {
+                        zk.Delete($"/{BOD.NodeDetails.ClusterName}/{BOD.NodeDetails.Ip}-{BOD.NodeDetails.UniqueId}", 0);
+                    }
                 }
-                zk.Create($"/{BOD.NodeDetails.ClusterName}/{BOD.NodeDetails.Ip}-{BOD.NodeDetails.UniqueId}", BOD.NodeDetails.Priority.ToString().GetBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.Ephemeral);
+                catch (Exception ex)
+                {
+
+                  
+                }
+                zk.Create($"/{BOD.NodeDetails.ClusterName}/{BOD.NodeDetails.Ip}-{BOD.NodeDetails.Priority.ToString()}", BOD.NodeDetails.Priority.ToString().GetBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.Ephemeral);
                 setLeaderNode();
             }
             catch (Exception ex)
@@ -121,9 +130,7 @@ namespace CDN.BLL.Zookeeper
             var nodes = (List<string>)zk.GetChildren("/" + ClusterName, true);
             foreach (var item in nodes)
             {
-                var byteArray = zk.GetData($"/{ BOD.NodeDetails.ClusterName}/{item}", true, null);
-
-                kv.Add(new KeyValuePair<long, string>(ByteToLong(byteArray), item.Substring(0, item.IndexOf("-"))));
+                kv.Add(new KeyValuePair<long, string>(long.Parse(item.Substring(item.IndexOf("-")+1)), item.Substring(0, item.IndexOf("-"))));
             }
             return kv;
         }

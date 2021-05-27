@@ -3,6 +3,7 @@ using CDN.BLL.Zookeeper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CDN.BLL.Services
 {
@@ -22,7 +23,7 @@ namespace CDN.BLL.Services
         public async System.Threading.Tasks.Task CheckForleaderHeartBeatAsync()
         {
             CDN.GRPC.protobuf.LeaderAlive alive = null;
-              
+
             try
             {
                 var GRPCClient = new BLL.GRPC.LeaderElection.GRPCClient_LeaderElection(BOD.NodeDetails.LeaderNode, BOD.SystemPorts.LeaderElection);
@@ -37,7 +38,7 @@ namespace CDN.BLL.Services
 
                 ElectLeader();
             }
-            
+
         }
 
         internal void ElectLeader()
@@ -89,12 +90,12 @@ namespace CDN.BLL.Services
                 foreach (var client in clients)
                 {
                     var response = await client.Client.InitiateLeaderElectionAsync
-                        (new CDN.GRPC.protobuf.LeaderElectionrequest() { Priority = BOD.NodeDetails.Priority }, deadline: DateTime.UtcNow.AddSeconds(5)).ResponseAsync;
+                        (new CDN.GRPC.protobuf.LeaderElectionrequest() { Priority = BOD.NodeDetails.Priority }, deadline: DateTime.UtcNow.AddSeconds(1)).ResponseAsync;
                     if (response.Response)
                     {
                         responses++;
                     }
-                    client.Stop_Channel();
+                
 
                 }
 
@@ -104,7 +105,7 @@ namespace CDN.BLL.Services
 
 
             }
-            return responses > 0;
+            return responses != clients.Count;
         }
 
         private List<GRPCClient_LeaderElection> CreateGRPCClients(List<KeyValuePair<long, string>> lstSelected)

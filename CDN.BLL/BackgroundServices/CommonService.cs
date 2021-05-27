@@ -41,6 +41,7 @@ namespace CDN.BLL.BackgroundServices
             Guid id = Guid.NewGuid();
             BOD.NodeDetails.UniqueId = id.ToString();
             BOD.NodeDetails.Priority = DateTime.UtcNow.Ticks;
+            Console.WriteLine("Priority : " + BOD.NodeDetails.Priority.ToString());
 
         }
     }

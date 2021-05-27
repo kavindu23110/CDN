@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CDN.BLL.GRPC.FileSystem
 {
-    internal class GRPCServer_FileSystem : CDN.GRPC.BaseClass.GRPCServer
+   public class GRPCServer_FileSystem : CDN.GRPC.BaseClass.GRPCServer
     {
         public GRPCServer_FileSystem(string host, int port) : base(host, port)
         {

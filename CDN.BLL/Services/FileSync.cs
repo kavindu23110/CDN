@@ -5,6 +5,7 @@ using Google.Protobuf;
 using Grpc.Core;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CDN.BLL.Services
@@ -87,13 +88,13 @@ namespace CDN.BLL.Services
         internal void OnFileChange(FileSystemEventArgs e)
         {
 
-            var obj = new CDN.GRPC.protobuf.FileOnChangeData();
-            obj.OldPath = GetRelativeFilePath(e.FullPath);
+            //var obj = new CDN.GRPC.protobuf.FileOnChangeData();
+            //obj.OldPath = GetRelativeFilePath(e.FullPath);
 
 
-            obj.OperationType = BOD.StaticLists.FileOperations.Change.ToString();
-            obj.Content = ByteString.CopyFrom(new FileHandler().ReadFile(e.FullPath.ToString()));
-            SendRequestsToLstClients(obj, BOD.StaticLists.FileOperations.Change);
+            //obj.OperationType = BOD.StaticLists.FileOperations.Change.ToString();
+            //obj.Content = ByteString.CopyFrom(new FileHandler().ReadFile(e.FullPath.ToString()));
+            //SendRequestsToLstClients(obj, BOD.StaticLists.FileOperations.Change);
         }
 
         internal void OnFileCreated(FileSystemEventArgs e)
@@ -128,7 +129,8 @@ namespace CDN.BLL.Services
             obj.OldPath = GetRelativeFilePath(e.OldFullPath);
             obj.OldFileName = e.OldName;
             obj.NewFileName = e.Name;
-
+            int milliseconds = 1000;
+            Thread.Sleep(milliseconds);
             obj.OperationType = BOD.StaticLists.FileOperations.Rename.ToString();
             SendRequestsToLstClients(obj, BOD.StaticLists.FileOperations.Rename);
         }

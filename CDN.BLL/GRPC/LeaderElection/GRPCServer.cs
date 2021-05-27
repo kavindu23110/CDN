@@ -2,7 +2,7 @@
 
 namespace CDN.BLL.GRPC.LeaderElection
 {
-    internal class GRPCServer : CDN.GRPC.BaseClass.GRPCServer
+    public class GRPCServer : CDN.GRPC.BaseClass.GRPCServer
     {
         public GRPCServer(string host, int port) : base(host, port)
         {

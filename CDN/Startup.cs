@@ -57,7 +57,7 @@ namespace CDN
                 HttpsCompression = Microsoft.AspNetCore.Http.Features.HttpsCompressionMode.Compress,
                 OnPrepareResponse = (context) =>
                 {
-                    var headers = context.Context.Response.GetTypedHeaders();
+                    var headers = context.Context.Response.GetTypedHeaders();  
                     headers.CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue
                     {
                         Public = true,

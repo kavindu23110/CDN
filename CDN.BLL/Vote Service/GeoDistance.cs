@@ -24,7 +24,7 @@ namespace CDN.BLL.Vote
                 string info = new WebClient().DownloadString($"http://ip-api.com/json/{ip}?fields=status,lat,lon");
                 ipInfo = JsonConvert.DeserializeObject<IpApi>(info);
 
-            }
+            } 
             catch (Exception)
             {
                 ipInfo.status = null;

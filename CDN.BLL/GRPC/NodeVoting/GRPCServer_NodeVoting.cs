@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CDN.BLL.GRPC.NodeVoting
 {
-    internal class GRPCServer_NodeVoting : CDN.GRPC.BaseClass.GRPCServer
+   public class GRPCServer_NodeVoting : CDN.GRPC.BaseClass.GRPCServer
     {
         public GRPCServer_NodeVoting(string host, int port) : base(host, port)
         {

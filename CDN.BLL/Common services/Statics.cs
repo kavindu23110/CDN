@@ -9,10 +9,10 @@ namespace CDN.BLL
     public static class Statics
     {
         public static CDN.BLL.Zookeeper.ZookeeperService zk { get; set; }
-        internal static GRPCServer_FileSystem FileShare { get; set; }
-        internal static GRPCServer_NodeVoting NodeVoting { get; set; }
-        internal static GRPCServer LeaderElection { get; set; }
-        internal static List<Learner> learners = new List<Learner>();
+        public static GRPCServer_FileSystem FileShare { get; set; }
+        public static GRPCServer_NodeVoting NodeVoting { get; set; }
+        public static GRPCServer LeaderElection { get; set; }
+        public static List<Learner> learners = new List<Learner>();
         public static Proposer.ProposerEvent ProposerEvent = new Proposer.ProposerEvent();
     }
 }
